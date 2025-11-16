@@ -1,0 +1,111 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gpu-workloads
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: time-slicing-config
+  namespace: gpu-operator
+data:
+  config.yaml: |
+    version: v1
+    sharing:
+      timeSlicing:
+        replicas: 4
+        failRequestsGreaterThanOne: true
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: training-workload-1
+  namespace: gpu-workloads
+spec:
+  restartPolicy: Never
+  containers:
+  - name: training
+    image: gpu-timeslicing/training:latest
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+    command: ["python3", "training/resnet_training.py", "--epochs", "10"]
+    volumeMounts:
+    - name: results
+      mountPath: /workspace/results
+  volumes:
+  - name: results
+    hostPath:
+      path: /data/gpu-results
+      type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: training-workload-2
+  namespace: gpu-workloads
+spec:
+  restartPolicy: Never
+  containers:
+  - name: training
+    image: gpu-timeslicing/training:latest
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+    command: ["python3", "training/bert_training.py", "--epochs", "5"]
+    volumeMounts:
+    - name: results
+      mountPath: /workspace/results
+  volumes:
+  - name: results
+    hostPath:
+      path: /data/gpu-results
+      type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: inference-workload
+  namespace: gpu-workloads
+spec:
+  restartPolicy: Never
+  containers:
+  - name: inference
+    image: gpu-timeslicing/inference:latest
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+    ports:
+    - containerPort: 5000
+    volumeMounts:
+    - name: results
+      mountPath: /workspace/results
+  volumes:
+  - name: results
+    hostPath:
+      path: /data/gpu-results
+      type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: interactive-workload
+  namespace: gpu-workloads
+spec:
+  restartPolicy: Never
+  containers:
+  - name: interactive
+    image: gpu-timeslicing/interactive:latest
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+    command: ["python3", "interactive/jupyter_simulation.py"]
+    volumeMounts:
+    - name: results
+      mountPath: /workspace/results
+  volumes:
+  - name: results
+    hostPath:
+      path: /data/gpu-results
+      type: DirectoryOrCreate
+

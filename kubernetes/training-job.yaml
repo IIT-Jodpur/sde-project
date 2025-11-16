@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: training-job
+  namespace: gpu-workloads
+spec:
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        app: training
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: training
+        image: gpu-timeslicing/training:latest
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+        command: 
+        - python3
+        - training/resnet_training.py
+        - --epochs
+        - "20"
+        - --batch-size
+        - "128"
+        - --save-model
+        volumeMounts:
+        - name: results
+          mountPath: /workspace/results
+        - name: models
+          mountPath: /workspace/models
+      volumes:
+      - name: results
+        persistentVolumeClaim:
+          claimName: results-pvc
+      - name: models
+        persistentVolumeClaim:
+          claimName: models-pvc
+  backoffLimit: 3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: results-pvc
+  namespace: gpu-workloads
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: models-pvc
+  namespace: gpu-workloads
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+
