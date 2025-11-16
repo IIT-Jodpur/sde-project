@@ -437,7 +437,8 @@ ls -lh results/*.png
 gcloud compute scp --recurse \
   gpu-timeslicing-vm:~/SDE/results \
   ~/Desktop/GPU-Results \
-  --zone=us-central1-a
+  --zone=us-central1-a \
+  --project=data-science-dev-356009
 
 # View on your Mac
 cd ~/Desktop/GPU-Results
@@ -445,6 +446,7 @@ open mode_comparison.png
 cat analysis_report.txt
 ```
 
+gsutil -m cp -r ~/sde-project/results gs:// gpu-time-slicing-experiment/gpu-results/
 ---
 
 ## Cost Management

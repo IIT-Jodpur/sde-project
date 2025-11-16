@@ -58,7 +58,7 @@ This project explores GPU time slicing as a cost-efficient method to run multipl
 ### Installation
 ```bash
 # Clone the repository
-git clone <repo-url>
+git clone https://github.com/IIT-Jodpur/sde-project.git
 cd SDE
 
 # Install Python dependencies

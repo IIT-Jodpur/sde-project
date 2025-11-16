@@ -126,20 +126,30 @@ class BenchmarkSuite:
         """Calculate aggregate performance metrics"""
         successful = [r for r in self.results['workload_results'] if r['success']]
         
+        total_workloads = len(self.results['workload_results'])
+        
         if not successful:
             print("Warning: No successful workloads to aggregate")
+            self.results['aggregate_metrics'] = {
+                'total_workloads': total_workloads,
+                'successful_workloads': 0,
+                'failed_workloads': total_workloads,
+                'avg_workload_duration': 0,
+                'total_gpu_time': 0,
+                'success_rate': 0
+            }
             return
         
         total_duration = sum(r['duration'] for r in successful)
         avg_duration = total_duration / len(successful)
         
         self.results['aggregate_metrics'] = {
-            'total_workloads': len(self.results['workload_results']),
+            'total_workloads': total_workloads,
             'successful_workloads': len(successful),
-            'failed_workloads': len(self.results['workload_results']) - len(successful),
+            'failed_workloads': total_workloads - len(successful),
             'avg_workload_duration': avg_duration,
             'total_gpu_time': total_duration,
-            'success_rate': len(successful) / len(self.results['workload_results']) * 100
+            'success_rate': len(successful) / total_workloads * 100
         }
     
     def save_results(self):
