@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # Training workload
+  training-1:
+    image: gpu-timeslicing/training:latest
+    container_name: training-1
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+    volumes:
+      - ../results:/workspace/results
+      - ../models:/workspace/models
+    command: python3 training/resnet_training.py --epochs 10 --batch-size 128
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # Inference workload
+  inference-1:
+    image: gpu-timeslicing/inference:latest
+    container_name: inference-1
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+    volumes:
+      - ../results:/workspace/results
+    ports:
+      - "5001:5000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # Interactive workload
+  interactive-1:
+    image: gpu-timeslicing/interactive:latest
+    container_name: interactive-1
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+    volumes:
+      - ../results:/workspace/results
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # Additional training workload (for multi-workload testing)
+  training-2:
+    image: gpu-timeslicing/training:latest
+    container_name: training-2
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+    volumes:
+      - ../results:/workspace/results
+      - ../models:/workspace/models
+    command: python3 training/bert_training.py --epochs 5 --batch-size 16
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
