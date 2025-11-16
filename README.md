@@ -14,7 +14,7 @@ Research project exploring GPU sharing strategies (Time Slicing, MPS, MIG) for r
 
 ```bash
 # Clone repository
-git clone https://github.com/YOUR_USERNAME/SDE.git
+git clone https://github.com/IIT-Jodpur/sde-project.git
 cd SDE
 
 # Install Python dependencies
@@ -68,7 +68,7 @@ brew install --cask google-cloud-sdk  # Mac
 
 # Login and configure
 gcloud auth login
-gcloud config set project YOUR_PROJECT_ID
+gcloud config set project PROJECT_ID
 
 # Request GPU quota (wait for approval)
 # Visit: https://console.cloud.google.com/iam-admin/quotas
@@ -156,14 +156,9 @@ gcloud compute instances delete gpu-vm --zone=us-central1-a
 | **MIG** | A100/H100 | Hardware | None | Complex |
 
 ## Documentation
-
-- **QUICKSTART.md** - Detailed setup guide with troubleshooting
-- **EXPERIMENTS_GUIDE.md** - Complete explanation of all experiments and datasets
-- **PROJECT_STRUCTURE.md** - Detailed project architecture and components
 - **GCP_DEPLOYMENT.md** - Complete GCP deployment guide with cost estimates
 - **gpu-configs/README.md** - GPU configuration details
 - **kubernetes/README.md** - Kubernetes deployment guide
-- **RESULTS_TEMPLATE.md** - Template for documenting experimental results
 
 ## Quick Commands
 
@@ -211,13 +206,3 @@ sudo ./gpu-configs/enable_mps.sh
 2. How does context switching overhead impact time slicing performance?
 3. What are the isolation guarantees for each sharing mode?
 4. How do different workload patterns affect resource utilization?
-
-## License
-
-MIT License
-
-## References
-
-- [NVIDIA Time Slicing](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/gpu-sharing.html)
-- [NVIDIA MPS](https://docs.nvidia.com/deploy/mps/index.html)
-- [NVIDIA MIG](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/)
