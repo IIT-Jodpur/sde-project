@@ -135,4 +135,3 @@ MIT License - see LICENSE file for details.
 - [NVIDIA Time Slicing Documentation](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/gpu-sharing.html)
 - [NVIDIA MPS Documentation](https://docs.nvidia.com/deploy/mps/index.html)
 - [NVIDIA MIG Documentation](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/)
-
